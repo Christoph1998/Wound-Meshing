@@ -35,11 +35,12 @@ def plot_sun_grayscale_and_depth_image(rgbd_img):
     plt.show()
 
 
+
 if __name__ == "__main__":
 
     # read JPG and PNG from SUNRGBD.zip\SUNRGBD\kv2\kinect2data\000135_2014-05-20_17-03-38_260595134347_rgbf000100-resize\
-    jpg_img = "0000100.jpg"
-    png_img = "0000100.png"
+    jpg_img = "ImageData/0000100.jpg"
+    png_img = "ImageData/0000100.png"
 
     # create RGBD
     rgbd_img = create_rgbd_image_from_jpg_and_png(jpg_img, png_img)
@@ -50,5 +51,16 @@ if __name__ == "__main__":
     # plot RGBD image
     plot_sun_grayscale_and_depth_image(rgbd_img)
 
-    # end 
-    print("end of code")
+
+    # create PCD from RGBD    
+    intrinsics = o3d.camera.PinholeCameraIntrinsic(o3d.camera.PinholeCameraIntrinsicParameters.PrimeSenseDefault)
+    
+    # load extrincis from SUN-Dataset (optional parameter)
+    # extrinsics = np.loadtxt("ImageData\extrinsics.txt")
+
+    pcd = o3d.geometry.PointCloud.create_from_rgbd_image(rgbd_img, intrinsics)
+    # Flip it, otherwise the pointcloud will be upside down
+    pcd.transform([[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]])
+    o3d.visualization.draw_geometries([pcd])
+
+    print("Ende")
