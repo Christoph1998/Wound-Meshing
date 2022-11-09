@@ -51,7 +51,6 @@ if __name__ == "__main__":
     # plot RGBD image
     plot_sun_grayscale_and_depth_image(rgbd_img)
 
-
     # create PCD from RGBD    
     intrinsics = o3d.camera.PinholeCameraIntrinsic(o3d.camera.PinholeCameraIntrinsicParameters.PrimeSenseDefault)
     
