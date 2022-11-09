@@ -63,4 +63,8 @@ if __name__ == "__main__":
     pcd.transform([[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]])
     o3d.visualization.draw_geometries([pcd])
 
+
+    o3d.io.write_point_cloud("pcd_output.pcd", pcd)
+
+
     print("Ende")
