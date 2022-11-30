@@ -14,12 +14,6 @@ def lod_mesh_export(mesh, lods, extension, path):
 
 if __name__ == "__main__":
 
-    """#Pfad einfügen
-    input_path="your_path_to_file/"
-    output_path="your_path_to_output_folder/"
-    dataname="sample.xyz"
-    point_cloud= np.loadtxt(input_path+dataname,skiprows=1)"""
-
     # pcd = o3d.io.read_point_cloud("pcd_output.pcd")
 
     #pointcloud transformation (nur für numpy klassen notwendig)(schauen, was parameter anordnung verändert)
