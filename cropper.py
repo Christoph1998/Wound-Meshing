@@ -92,52 +92,33 @@ if __name__ == "__main__":
     
     
     print(points)
-    # mask=np.where((points[:,2] > ZMAX))[0] 
 
-    
+    XMIN = 20
+    XMAX = 300
 
-
-
-    #& np.where(points[:,2] < ZMIN)[0]
-    i = 0
-    mask = list()
-    for row in points:
-        if row[2] > ZMAX:
-            mask.append(i)
-        i += 1
-
-    j = 0
-    XMIN = -140
-    mask2 = list()
-    for row in points:
-        if row[0] > XMIN:
-            mask2.append(j)
-    j += 1
-
-    mask_sum = list()
-    for n in mask:
-        if mask[n] in mask2: 
-            mask_sum.append(mask[n])
+    YMIN = -25
+    YMAX = 40
 
 
+    # crop z axis
+    mask_z =np.where((points[:,2] > ZMIN) & (points[:,2] < ZMAX))[0] 
+    points_z = points[mask_z]
 
-    print(len(points))
-    print(len(mask))
-        #  & (points[:,0] > -300) & (points[:,0] > -200) & (points[:,1] > -300) & (points[:,1] > -200))[0]
-  #  & (points[:,1] > -140) & (points[:,0] > -260)
-    #depth_map_tesa = depth_map_in[300:480,700:870]
-    
-    print("cropped plot")
-    pcd_load_cropped = pcd_load.select_by_index(mask_sum, invert=True)
-    #mask.append(np.where(points[:,2] < ZMIN)[0])
-    print("Plot PCD")
-    o3d.visualization.draw_geometries([pcd_load], window_name='pcd_load')
+    # crop y axis
+    mask_y = np.where((points_z[:,1] > YMIN) & (points_z[:,1] < YMAX))[0]
+    points_z_y = points_z[mask_y]
 
-    display_inlier_outlier(pcd_load,mask)
+    mask_x = np.where((points_z_y[:,0] > XMIN) & (points_z_y[:,0] < XMAX))[0]
+    points_z_y_x = points_z_y[mask_x]
 
-    #f2 = plt.figure(2)
-    print(pcd_load_cropped)
-    print("Plot Cropped point cloud: ")
-    o3d.visualization.draw_geometries([pcd_load_cropped], window_name='pcd_load_cropped')
+    cropped_pcd = o3d.geometry.PointCloud()
+    cropped_pcd.points = o3d.utility.Vector3dVector(points_z_y_x)
+
+    o3d.visualization.draw_geometries([cropped_pcd], window_name='timon_and_christoph_croppen')
+
+
+    # display_inlier_outlier(pcd_load,mask)
+
+
 
   
