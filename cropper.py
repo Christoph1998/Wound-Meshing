@@ -22,6 +22,7 @@ def display_inlier_outlier(cloud, ind):
     o3d.visualization.draw_geometries([inlier_cloud, outlier_cloud], zoom=0.3412, front=[0.426, -0.2125, -0.8795], lookat=[2.6172, 2.0475, 1.532],up=[-0.0694, -0.9768, 0.2024])
 
 
+
 if __name__ == "__main__":
 
     # Reading point cloud from .ply file
@@ -45,7 +46,7 @@ if __name__ == "__main__":
     YMIN = 0
     YMAX = 25
 
-    ZMIN = 100
+    ZMIN = 332
     ZMAX = 355
 
     # crop z axis
@@ -64,7 +65,7 @@ if __name__ == "__main__":
 
     o3d.visualization.draw_geometries([cropped_pcd], window_name='timon_and_christoph_croppen')
 
-    o3d.io.write_point_cloud("cropped_pcd_loetlitze_exp.ply", cropped_pcd)
+    o3d.io.write_point_cloud("cropped_pcd_loetlitze_only.ply", cropped_pcd)
 
     # display_inlier_outlier(pcd_load,mask)
 
