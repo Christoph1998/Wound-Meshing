@@ -10,7 +10,9 @@ def write_pcd_to_txt(pcd):
 if __name__ == "__main__":
 
     print("Read pointcloud and draw")
-    pcd = o3d.io.read_point_cloud("pcd_output.pcd")
+    # pcd = o3d.io.read_point_cloud("pcd_output.pcd")
+    # pcd = o3d.io.read_point_cloud("SampleData\point_cloud_from_rgbd_14-11-2022_14-42-13.ply")
+    pcd = o3d.io.read_point_cloud("cropped_pcd_loetlitze.ply")
     # o3d.visualization.draw_geometries([pcd])
 
     # print("Estimate normals - this is optiobnal - test it")

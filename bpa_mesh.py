@@ -11,8 +11,9 @@ def write_pcd_to_txt(pcd):
 if __name__ == "__main__":
 
     print("Read pointcloud and draw")
-    pcd = o3d.io.read_point_cloud("pcd_output.pcd")
-    o3d.visualization.draw_geometries([pcd])
+    # pcd = o3d.io.read_point_cloud("pcd_output.pcd")
+    pcd = o3d.io.read_point_cloud("cropped_pcd_loetlitze.ply")
+   # o3d.visualization.draw_geometries([pcd])
 
     print("Estimate normals - this is optiobnal - test it")
     pcd.estimate_normals()
@@ -33,7 +34,7 @@ if __name__ == "__main__":
 
     print("create dec_mesh and remove shit")
     # anzahl an dreiecken festlegen mit denen das mesh gebildet wird
-    dec_mesh = bpa_mesh.simplify_quadric_decimation(100000)
+    dec_mesh = bpa_mesh.simplify_quadric_decimation(1000000)
 
     # Konsistenz des meshes überprüfen
     dec_mesh.remove_degenerate_triangles()
@@ -47,9 +48,17 @@ if __name__ == "__main__":
     o3d.io.write_triangle_mesh("dec_mesh.ply", dec_mesh)
     o3d.io.write_triangle_mesh("dec_mesh.obj", dec_mesh)
 
+    # calculate convex_hull
+    hull, return_list = pcd.compute_convex_hull()
+    hull_ls = o3d.geometry.LineSet.create_from_triangle_mesh(hull)
+    hull_ls.paint_uniform_color((1, 0, 0))
 
-    print("Draw")
-    o3d.visualization.draw_geometries([bpa_mesh])
-    o3d.visualization.draw_geometries([dec_mesh])
+
+    print("Draw_bpa")
+    # o3d.visualization.draw_geometries([bpa_mesh])
+    print("Draw dec")
+    o3d.visualization.draw_geometries([pcd, dec_mesh, hull_ls])
+
+
 
 
