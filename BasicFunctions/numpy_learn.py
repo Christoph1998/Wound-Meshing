@@ -1,26 +1,22 @@
 import numpy as np
+import math
 
 test_array = np.array([[1, 8, 3], [3, 9, -3], [3, 4, 5], [3, 7, -5]], dtype=np.float64)
 
-for row in test_array:
-    print(row[0], row[1], row[2])  
-
-# mask = np.where((test_array[:,0] > 1))[0]
-
-# mask = np.where((test_array[:,0] > 1) & (test_array[:,1] > 5))[0]
-
-# mask = np.where((test_array[:,0] > 1) & (test_array[:,1] > 5) & (test_array[:,2] < -2))[0]
 
 
-mask_z = np.where(test_array[:,2] < -1)[0]
-print(mask_z)
-test_array_2 = test_array[mask_z]
-print(test_array_2)
+x_min, x_max, x_dist = 0, 0, 0
+y_min, y_max, y_dist = 0, 0, 0
+z_min, z_max, z_dist = 0, 0, 0
+   # calc min
+mini = np.min(test_array)
+maxi = np.max(test_array)
 
-mask_y = np.where(test_array_2[:,1] > 8)[0]
-print(mask_y)
-test_array_3 = test_array_2[mask_y]
-print(test_array_3)
-# (test_array[:,1] < 3)
-# (test_array[:,2] < 2)
+p1 = np.array(mini)
+p2 = np.array(maxi)
 
+squared_dist = np.sum((p1-p2)**2)
+dist = np.sqrt(squared_dist)
+
+
+print(dist)

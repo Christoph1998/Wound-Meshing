@@ -5,10 +5,45 @@ from pyntcloud import PyntCloud
 import matplotlib.pyplot as plt
 from scipy.spatial import ConvexHull, convex_hull_plot_2d
 from mpl_toolkits.mplot3d import Axes3D
+import math
+from matplotlib.patches import Rectangle
+
+
 
 def write_pcd_to_txt(pcd):
     temp = np.column_stack([pcd.points, pcd.colors, pcd.normals])
     np.savetxt("pcd_as_txt.txt", temp)
+
+
+def calc_max_distances(pcd):
+    # read pcd as np array
+    points = np.asarray(pcd.points)
+    
+    # define vars
+    x_min, x_max, x_dist = 0, 0, 0
+    y_min, y_max, y_dist = 0, 0, 0
+    z_min, z_max, z_dist = 0, 0, 0
+
+    # calc min
+    x_min = np.min(points[:,0])
+    y_min = np.min(points[:,1])
+    z_min = np.min(points[:,2])
+
+    # calc max
+    x_max = np.max(points[:,0])
+    y_max = np.max(points[:,1])
+    z_max = np.max(points[:,2])
+
+    # cals dist
+    x_dist = x_max-x_min
+    y_dist = y_max-y_min
+    z_dist = z_max-z_min
+
+    min_values = [x_min, y_min, z_min]
+    max_values = [x_max, y_max, z_max]
+
+    # return distances
+    return x_dist, y_dist, z_dist
 
 
 if __name__ == "__main__":
@@ -72,6 +107,16 @@ if __name__ == "__main__":
     vol_mm = fig_hull.volume
     vol_m3 = vol_mm * 1e-9
     print("Volume = " + str(vol_mm) + " mm^3" + " = " + str(vol_m3) + " m^3")
+
+    area_mm = fig_hull.area
+    area_m3 = area_mm * 1e-9
+    print("Area = " + str(area_mm) + " mm^3" + " = " + str(area_m3) + " m^3")
+
+    x_dist_max, y_dist_max, z_dist_max = calc_max_distances(pcd)
+
+    print("x_max_dist=", x_dist_max)
+    print("y_max_dist=", y_dist_max) 
+    print("z_max_dist=", z_dist_max)
 
     edges = list(zip(*points))
 
