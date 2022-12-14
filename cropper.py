@@ -40,13 +40,18 @@ if __name__ == "__main__":
 
 
     # Lötlitze Coordinates
-    XMIN = 45
-    XMAX = 70
+    # XMIN = 45
+    # XMAX = 70
+
+    XMIN = 40
+    XMAX = 75
+
 
     YMIN = 0
     YMAX = 25
 
-    ZMIN = 332
+    #ZMIN = 332
+    ZMIN = 300
     ZMAX = 355
 
     # crop z axis
@@ -67,7 +72,7 @@ if __name__ == "__main__":
 
     o3d.io.write_point_cloud("cropped_pcd_loetlitze_only.ply", cropped_pcd)
 
-    # display_inlier_outlier(pcd_load,mask)
+    display_inlier_outlier(pcd_load,mask_x)
 
 
 

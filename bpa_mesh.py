@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
     print("create dec_mesh and remove shit")
     # anzahl an dreiecken festlegen mit denen das mesh gebildet wird
-    dec_mesh = bpa_mesh.simplify_quadric_decimation(1000000)
+    dec_mesh = bpa_mesh.simplify_quadric_decimation(10000000)
 
     # Konsistenz des meshes überprüfen
     dec_mesh.remove_degenerate_triangles()
