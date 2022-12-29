@@ -108,6 +108,9 @@ def read_point_cloud_from_file(path, transform, plot):
         
 
 def create_mesh_bpa_algo(pcd, simplify_quadric_decimation = 500000, filename='', plot=True):
+    # estimates normals
+    pcd.estimate_normals()
+    
     # calculate nearest neighbords
     distances = pcd.compute_nearest_neighbor_distance()
     
@@ -124,13 +127,14 @@ def create_mesh_bpa_algo(pcd, simplify_quadric_decimation = 500000, filename='',
     simplified_mesh = bpa_mesh.simplify_quadric_decimation(simplify_quadric_decimation)
 
     # check consistency
-    simplified_mesh.remove_defenerate_triangles()
+    simplified_mesh.remove_degenerate_triangles()
     simplified_mesh.remove_duplicated_triangles()
     simplified_mesh.remove_duplicated_vertices()
     simplified_mesh.remove_non_manifold_edges()
 
     if filename != '':
-        o3d.io.write_triangle_mesh("filename", simplified_mesh)
+        print("PCD wid gespeichert")
+        o3d.io.write_triangle_mesh(filename+".ply", simplified_mesh)
 
     if plot:
         o3d.visualization.draw_geometries([simplified_mesh], window_name="mesh")
@@ -150,6 +154,9 @@ if __name__ == "__main__":
     obj2 = ()
     obj3 = ()
 
-    # crop pcd to object
+    # crop pcd
     pcd_obj_1 = crop_point_cloud(pcd=pcd, coordinates=obj1, plot=True, filename='cropped_point_cloud_onj1.ply')
 
+    # create mesh using ball pivot algorithm
+    # if filename != '' then pcd gets safed as file
+    mesh = create_mesh_bpa_algo(pcd_obj_1, 1000000, filename='test', plot=True)
