@@ -10,6 +10,9 @@ import open3d as o3d
 import numpy as np
 from PyQt6 import uic
 from PyQt6.QtWidgets import QApplication
+import matplotlib.pyplot as plt
+from pyntcloud import PyntCloud
+from scipy.spatial import ConvexHull
 
 
 def calc_max_distances(pcd):
@@ -90,7 +93,6 @@ def crop_point_cloud(pcd, coordinates, plot=True, filename=''):
 
     return cropped_pcd
 
-
 # @BRIEF: Reads a PointCloud from file, transforms it and plots
 def read_point_cloud_from_file(path, transform, plot):
     # read input point cloud
@@ -141,6 +143,56 @@ def create_mesh_bpa_algo(pcd, simplify_quadric_decimation = 500000, filename='',
 
     return simplified_mesh
 
+# calculate convex hull and get measurements
+def compute_convex_hull(pcd, plot=True):
+    # calculate convex_hull using o3d for graphic output
+    hull, return_list = pcd.compute_convex_hull()
+    hull_ls = o3d.geometry.LineSet.create_from_triangle_mesh(hull)
+    hull_ls.paint_uniform_color((1, 0, 0))
+    
+    # create figure and create subplot
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    # create convex hull from pcd using scipy for measurement calculation
+    points = np.asarray(pcd.points)
+    fig_hull = ConvexHull(points)
+    
+    # get volume of defined object
+    vol_mm = fig_hull.volume
+    vol_m3 = vol_mm * 1e-9
+    print("Volume = " + str(vol_mm) + " mm^3" + " = " + str(vol_m3) + " m^3")
+
+    # get area from defined object
+    area_mm = fig_hull.area
+    area_m3 = area_mm * 1e-9
+    print("Area = " + str(area_mm) + " mm^3" + " = " + str(area_m3) + " m^3")
+
+    # get maximal distances in each coordinate
+    x_dist_max, y_dist_max, z_dist_max = calc_max_distances(pcd)
+
+    print("x_max_dist=", x_dist_max)
+    print("y_max_dist=", y_dist_max) 
+    print("z_max_dist=", z_dist_max)
+
+    # get edges from pointcloud for plotting
+    edges = list(zip(*points))
+
+    for i in fig_hull.simplices:
+        plt.plot(points[i,0], points[i,1], points[i,2], 'r-')
+
+    ax.plot(edges[0],edges[1],edges[2],'bo')
+
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
+
+    # plot
+    if plot:
+        plt.show()
+
+    # return o3d convex hull ls for further graphic comparison
+    return hull_ls
 
 if __name__ == "__main__":
     
@@ -155,8 +207,10 @@ if __name__ == "__main__":
     obj3 = ()
 
     # crop pcd
-    pcd_obj_1 = crop_point_cloud(pcd=pcd, coordinates=obj1, plot=True, filename='cropped_point_cloud_onj1.ply')
+    pcd_obj_1 = crop_point_cloud(pcd=pcd, coordinates=obj1, plot=False, filename='cropped_point_cloud_onj1.ply')
 
     # create mesh using ball pivot algorithm
     # if filename != '' then pcd gets safed as file
-    mesh = create_mesh_bpa_algo(pcd_obj_1, 1000000, filename='test', plot=True)
+    mesh = create_mesh_bpa_algo(pcd_obj_1, 1000000, filename='test', plot=False)
+
+    hull = compute_convex_hull(pcd_obj_1)
