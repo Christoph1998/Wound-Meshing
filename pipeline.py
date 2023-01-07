@@ -194,6 +194,26 @@ def compute_convex_hull(pcd, plot=True):
     # return o3d convex hull ls for further graphic comparison
     return hull_ls
 
+# function to plot pcd, mesh and convex hull in different combinations
+def plot_wound(pcd=None, mesh=None, hull=None):
+    
+    # create list for elements which are going to be plot
+    plot_list = []
+
+    # check input parameters and add object to plot_list
+    if pcd is not None:
+        plot_list.append(pcd)
+    if mesh is not None:
+        plot_list.append(mesh)
+    if hull is not None:
+        plot_list.append(hull)
+
+    # plot
+    print("Plotting " + str(plot_list))
+    o3d.visualization.draw_geometries(plot_list)
+
+
+
 if __name__ == "__main__":
     
     # read point cloud and prepare for further operations
@@ -213,4 +233,9 @@ if __name__ == "__main__":
     # if filename != '' then pcd gets safed as file
     mesh = create_mesh_bpa_algo(pcd_obj_1, 1000000, filename='test', plot=False)
 
+    # compute convex hull and calculate object measurements
     hull = compute_convex_hull(pcd_obj_1)
+
+    # plot the calculated forms in diffrent combinations
+    plot_wound(pcd=pcd_obj_1, mesh=mesh, hull=hull)
+
