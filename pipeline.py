@@ -214,28 +214,30 @@ def plot_wound(pcd=None, mesh=None, hull=None):
 
 
 
-if __name__ == "__main__":
-    
+def example_1():
     # read point cloud and prepare for further operations
     pcd = read_point_cloud_from_file(path="SampleData\spatials_14-11-2022_14-42-13.ply", 
                                 transform=[[1,0,0,0],[0,-1,0,0],[0,0,1,0],[0,0,0,1]], plot=False)
 
 
     # define wound coordinates ->> (x_min, x_max, y_min, y_max, z_min, z_max)
-    obj1 = (45, 70, 0, 25, 300, 355)
-    obj2 = ()
-    obj3 = ()
+    obj = (45, 70, 0, 25, 300, 355)
 
     # crop pcd
-    pcd_obj_1 = crop_point_cloud(pcd=pcd, coordinates=obj1, plot=False, filename='cropped_point_cloud_onj1.ply')
+    pcd = crop_point_cloud(pcd=pcd, coordinates=obj, plot=False, filename='cropped_point_cloud_onj1.ply')
 
     # create mesh using ball pivot algorithm
     # if filename != '' then pcd gets safed as file
-    mesh = create_mesh_bpa_algo(pcd_obj_1, 1000000, filename='test', plot=False)
+    mesh = create_mesh_bpa_algo(pcd, 1000000, filename='test', plot=False)
 
     # compute convex hull and calculate object measurements
-    hull = compute_convex_hull(pcd_obj_1)
+    hull = compute_convex_hull(pcd = pcd, plot=False)
 
     # plot the calculated forms in diffrent combinations
-    plot_wound(pcd=pcd_obj_1, mesh=mesh, hull=hull)
+    plot_wound(pcd=pcd, mesh=mesh, hull=hull)
+
+
+if __name__ == "__main__":
+    example_1()
+
 
