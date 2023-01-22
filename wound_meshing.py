@@ -2,10 +2,13 @@ import open3d as o3d
 import numpy as np
 import matplotlib.pyplot as plt
 from pyntcloud import PyntCloud
-from scipy.spatial import ConvexHull
+from scipy.spatial import ConvexHull, Delaunay
+from functools import reduce
+import math
 
 
 def calc_max_distances(pcd):
+
     # read pcd as np array
     points = np.asarray(pcd.points)
     
@@ -84,12 +87,13 @@ def crop_point_cloud(pcd, coordinates, plot=True, filename=''):
     return cropped_pcd
 
 # @BRIEF: Reads a PointCloud from file, transforms it and plots
-def read_point_cloud_from_file(path, transform, plot):
+def read_point_cloud_from_file(path, transform='', plot=False):
     # read input point cloud
     pcd = o3d.io.read_point_cloud(path)
 
     # need inversion to get correct map. Depends on save() function in generation file
-    pcd.transform(transform) 
+    if transform != '':
+        pcd.transform(transform) 
     
     print("PointCloud successfully loaded and transformed")
 
@@ -227,3 +231,95 @@ def plot_measurements(pcd):
 
     # plot
     plt.show()
+
+
+def create_mesh_poisson_algo(pcd):
+    pcd.compute_convex_hull()
+    pcd.estimate_normals()
+    pcd.orient_normals_consistent_tangent_plane(10)
+
+    mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd, depth=10, width=0, scale=20, linear_fit=True)[0]
+    mesh.compute_vertex_normals()
+    mesh.paint_uniform_color([0.5, 0.5, 0.5])
+    mesh.remove_degenerate_triangles()
+    o3d.visualization.draw_geometries([pcd, mesh], mesh_show_back_face=True)
+
+    return mesh
+
+
+# https://jose-llorens-ripolles.medium.com/stockpile-volume-with-open3d-fa9d32099b6f
+def volume_calculation(pcd):
+    # check location
+    axes = o3d.geometry.TriangleMesh.create_coordinate_frame()
+    o3d.visualization.draw_geometries([pcd, axes])
+
+    # for volume computation, floor hast to be parralal to XY plane
+    plane_model, inliers = pcd.segment_plane(distance_threshold=0.01,
+                                         ransac_n=3,
+                                         num_iterations=10000)
+    [a, b, c, d] = plane_model
+    plane_pcd = pcd.select_by_index(inliers)
+    plane_pcd.paint_uniform_color([1.0, 0, 0])
+    wound_pcd = pcd.select_by_index(inliers, invert=True)
+    wound_pcd.paint_uniform_color([0, 0, 1.0])
+    o3d.visualization.draw_geometries([plane_pcd, wound_pcd, axes])
+
+    #rotate and translate
+    plane_pcd = plane_pcd.translate((0,0,d/c))
+    wound_pcd = wound_pcd.translate((0,0,d/c))
+    cos_theta = c / math.sqrt(a**2 + b**2 + c**2)
+    sin_theta = math.sqrt((a**2+b**2)/(a**2 + b**2 + c**2))
+    print(a, b, c, d)
+    # u_1 = b / math.sqrt(a**2 + b**2 )
+    # u_2 = -a / math.sqrt(a**2 + b**2)
+    u_1 = -1
+    u_2 = -1
+    rotation_matrix = np.array([[cos_theta + u_1**2 * (1-cos_theta), u_1*u_2*(1-cos_theta), u_2*sin_theta],
+                                [u_1*u_2*(1-cos_theta), cos_theta + u_2**2*(1- cos_theta), -u_1*sin_theta],
+                                [-u_2*sin_theta, u_1*sin_theta, cos_theta]])
+    plane_pcd.rotate(rotation_matrix)
+    wound_pcd.rotate(rotation_matrix)
+    o3d.visualization.draw_geometries([plane_pcd, wound_pcd, axes])
+
+    # remove outliners
+    cl, ind = wound_pcd.remove_statistical_outlier(nb_neighbors=30,
+                                                        std_ratio=2.0)
+    wound_pcd = wound_pcd.select_by_index(ind)
+    o3d.visualization.draw_geometries([wound_pcd])
+
+
+    # use wound characteristics -> surface is bound by the XY plane -> no two points have same x,y 
+    downpdc = wound_pcd.voxel_down_sample(voxel_size=0.05)
+    xyz = np.asarray(downpdc.points)
+    xy_catalog = []
+    for point in xyz:
+        xy_catalog.append([point[0], point[1]])
+    tri = Delaunay(np.array(xy_catalog))
+
+    # make it 3d
+    surface = o3d.geometry.TriangleMesh()
+    surface.vertices = o3d.utility.Vector3dVector(xyz)
+    surface.triangles = o3d.utility.Vector3iVector(tri.simplices)
+    o3d.visualization.draw_geometries([surface], mesh_show_wireframe=True)
+
+    # sum of triangles
+    volume = reduce(lambda a, b:  a + volume_under_triangle(b), get_triangles_vertices(surface.triangles, surface.vertices), 0)
+    print(f"The volume of the stockpile is: {round(volume, 4)} mm3")
+
+# helper function to transform mesh 
+def get_triangles_vertices(triangles, vertices):
+    # compute volume of each triangle of the surface to XY plane. Then add up volume
+    triangles_vertices = []
+    # translate triangles to 3D points and not indices to the vertices list
+    for triangle in triangles:
+        new_triangles_vertices = [vertices[triangle[0]], vertices[triangle[1]], vertices[triangle[2]]]
+        triangles_vertices.append(new_triangles_vertices)
+    return np.array(triangles_vertices)
+
+# helper function to compute volume unter each triangle
+def volume_under_triangle(triangle):
+    p1, p2, p3 = triangle
+    x1, y1, z1 = p1
+    x2, y2, z2 = p2
+    x3, y3, z3 = p3
+    return abs((z1+z2+z3)*(x1*y2-x2*y1+x2*y3-x3*y2+x3*y1-x1*y3)/6)

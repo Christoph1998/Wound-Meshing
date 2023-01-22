@@ -11,7 +11,9 @@ from wound_meshing import *
 def example_for_object_1():
     # read point cloud and prepare for further operations
     pcd = read_point_cloud_from_file(path=r"SampleData\spatials_14-11-2022_14-42-13.ply", 
-                                transform=[[1,0,0,0],[0,-1,0,0],[0,0,1,0],[0,0,0,1]], plot=False)
+                               transform=[[1,0,0,0],[0,-1,0,0],[0,0,1,0],[0,0,0,1]], plot=False)
+
+    # pcd = read_point_cloud_from_file(path=r"SampleData\spatials_14-11-2022_14-42-13.ply", plot=False)
 
 
     # define wound coordinates ->> (x_min, x_max, y_min, y_max, z_min, z_max)
@@ -19,7 +21,9 @@ def example_for_object_1():
     # obj = (45, 70, 0, 25, 300, 355)
 
     # without border
-    obj = (40, 70, 0, 25, 332, 355)
+    #obj = (40, 70, 0, 25, 332, 355)
+
+    obj = (40, 70, 0, 25, 332, 400)
 
     # crop pcd
     pcd = crop_point_cloud(pcd=pcd, coordinates=obj, plot=False, filename='cropped_point_cloud_onj1.ply')
@@ -29,6 +33,13 @@ def example_for_object_1():
     # create mesh using ball pivot algorithm
     # if filename != '' then pcd gets safed as file
     mesh = create_mesh_bpa_algo(pcd, 1000000, filename='test', plot=False)
+
+
+    # mesh = create_mesh_poisson_algo2(pcd)
+    
+
+    volume_calculation(pcd)
+
 
     # compute convex hull and calculate object measurements
     hull = compute_convex_hull(pcd = pcd, plot=False)
@@ -61,6 +72,41 @@ def testboard_v1_1200dots_35cm_flat_large():
     # if filename != '' then pcd gets safed as file
     mesh = create_mesh_bpa_algo(pcd, 1000000, filename='test', plot=False)
 
+    volume_calculation(pcd)
+
+    # compute convex hull and calculate object measurements
+    hull = compute_convex_hull(pcd = pcd, plot=False)
+
+    # plot the calculated forms in diffrent combinations
+    plot_wound(pcd=pcd, mesh=mesh, hull=hull)
+
+
+
+def testboard_v1_1200dots_35cm_flat_large2():
+    # read point cloud and prepare for further operations
+    pcd = read_point_cloud_from_file(path=r"SampleData\spatials_12-01-2023_15-29-46.ply", plot=False)
+
+
+    # define wound coordinates ->> (x_min, x_max, y_min, y_max, z_min, z_max)
+
+    # full wound plate
+    obj = (-100, 50, -20, 40, 390, 420)
+
+    # object top row third
+    # make use of plot_measurements to define coordinates easier
+    #obj=(-49,-27,-6.5,10,390,420)
+    # crop pcd
+    pcd = crop_point_cloud(pcd=pcd, coordinates=obj, plot=False, filename='cropped_point_cloud_onj1.ply')
+
+    # plot_measurements(pcd)
+
+    plot_wound(pcd)
+    # create mesh using ball pivot algorithm
+    # if filename != '' then pcd gets safed as file
+    mesh = create_mesh_bpa_algo(pcd, 1000000, filename='test', plot=False)
+
+    volume_calculation(pcd)
+
     # compute convex hull and calculate object measurements
     hull = compute_convex_hull(pcd = pcd, plot=False)
 
@@ -70,4 +116,4 @@ def testboard_v1_1200dots_35cm_flat_large():
    
 if __name__ == "__main__":
     testboard_v1_1200dots_35cm_flat_large()
-    #example_for_object_1()
+    example_for_object_1()
