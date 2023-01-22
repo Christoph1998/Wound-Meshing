@@ -86,10 +86,10 @@ def crop_point_cloud(pcd, coordinates, plot=True, filename=''):
 # @BRIEF: Reads a PointCloud from file, transforms it and plots
 def read_point_cloud_from_file(path, transform, plot):
     # read input point cloud
-    pcd = o3d.io.read_point_cloud(r"SampleData\spatials_14-11-2022_14-42-13.ply")
+    pcd = o3d.io.read_point_cloud(path)
 
     # need inversion to get correct map. Depends on save() function in generation file
-    pcd.transform([[1,0,0,0],[0,-1,0,0],[0,0,1,0],[0,0,0,1]]) 
+    pcd.transform(transform) 
     
     print("PointCloud successfully loaded and transformed")
 
@@ -161,9 +161,9 @@ def compute_convex_hull(pcd, plot=True):
     # get maximal distances in each coordinate
     x_dist_max, y_dist_max, z_dist_max = calc_max_distances(pcd)
 
-    print("x_max_dist=", x_dist_max)
-    print("y_max_dist=", y_dist_max) 
-    print("z_max_dist=", z_dist_max)
+    print("x_max_dist=", x_dist_max, "mm")
+    print("y_max_dist=", y_dist_max, "mm") 
+    print("z_max_dist=", z_dist_max, "mm")
 
     # get edges from pointcloud for plotting
     edges = list(zip(*points))
@@ -201,3 +201,29 @@ def plot_wound(pcd=None, mesh=None, hull=None):
     # plot
     print("Plotting " + str(plot_list))
     o3d.visualization.draw_geometries(plot_list)
+
+
+
+def plot_measurements(pcd):  
+    # create figure and create subplot
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    # create convex hull from pcd using scipy for measurement calculation
+    points = np.asarray(pcd.points)
+    fig_hull = ConvexHull(points)
+    
+    # get edges from pointcloud for plotting
+    edges = list(zip(*points))
+
+    for i in fig_hull.simplices:
+        plt.plot(points[i,0], points[i,1], points[i,2], 'r-')
+
+    ax.plot(edges[0],edges[1],edges[2],'bo')
+
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
+
+    # plot
+    plt.show()
