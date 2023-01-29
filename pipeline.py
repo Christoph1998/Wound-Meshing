@@ -39,7 +39,7 @@ def example_for_object_1():
     # mesh = create_mesh_poisson_algo2(pcd)
     
 
-    volume_calculation(pcd)
+    #volume_calculation(pcd)
 
 
     # compute convex hull and calculate object measurements
@@ -124,8 +124,9 @@ def presentation_examples():
     # define wound coordinates ->> (x_min, x_max, y_min, y_max, z_min, z_max)
 
     # full wound plate
-    #obj = (-100, 50, -20, 40, 390, 420)
+    # obj = (-150, 50, -20, 10, 390, 420)
 
+    #plot_measurements(pcd)
     # object top row third
     # make use of plot_measurements to define coordinates easier
     obj=(-49,-27,-8,6,400,411)
@@ -135,8 +136,10 @@ def presentation_examples():
 
     plot_measurements(pcd)
 
-    #mesh = create_mesh_bpa_algo(pcd, 10000000, filename='test', plot=True)
+    #mesh = create_mesh_bpa_algo(pcd, 100000, filename='test', plot=True)
     mesh=create_mesh_poisson_algo(pcd)
+    print(mesh.get_volume())
+
     plot_wound(mesh = mesh)
 
     #volume_calculation(pcd)
