@@ -9,6 +9,7 @@
 from wound_meshing import *
 import random
 
+
 def example_for_object_1():
     # read point cloud and prepare for further operations
     pcd = read_point_cloud_from_file(path=r"SampleData\spatials_14-11-2022_14-42-13.ply", 

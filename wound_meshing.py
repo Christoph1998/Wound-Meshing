@@ -103,7 +103,7 @@ def read_point_cloud_from_file(path, transform='', plot=False):
     return pcd
         
 
-def create_mesh_bpa_algo(pcd, simplify_quadric_decimation = 500000, filename='', plot=True):
+def create_mesh_bpa_algo(pcd, simplify_quadric_decimation, filename='', plot=True):
     # estimates normals
     pcd.estimate_normals()
     
@@ -233,7 +233,7 @@ def plot_measurements(pcd):
     plt.show()
 
 
-def create_mesh_poisson_algo(pcd):
+def create_mesh_poisson_algo(pcd, plot=False):
     pcd.compute_convex_hull()
     pcd.estimate_normals()
     pcd.orient_normals_consistent_tangent_plane(10)
@@ -242,7 +242,8 @@ def create_mesh_poisson_algo(pcd):
     mesh.compute_vertex_normals()
     mesh.paint_uniform_color([0.5, 0.5, 0.5])
     mesh.remove_degenerate_triangles()
-    o3d.visualization.draw_geometries([pcd, mesh], mesh_show_back_face=True)
+    if plot:
+        o3d.visualization.draw_geometries([pcd, mesh], mesh_show_back_face=True)
 
     return mesh
 

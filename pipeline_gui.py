@@ -45,8 +45,11 @@ class App(QMainWindow, Ui_MainWindow):
         self.pB_crop_pcd.clicked.connect(self.crop_pcd)
         self.pB_plot_measurement.clicked.connect(self.plot_measurements)
         self.pB_plot_pipeline_pcd.clicked.connect(self.plot_pipeline_pcd)
+        self.pB_ball_pivot.clicked.connect(self.run_bpa)
+        self.pB_pois.clicked.connect(self.run_pois)
+        self.pB_plot_wound.clicked.connect(self.plot_selection)
+        self.pB_hull.clicked.connect(self.run_hull)
         
-
 
     def read_pcd(self):
         print("Start reading Point Cloud")
@@ -84,6 +87,53 @@ class App(QMainWindow, Ui_MainWindow):
 
     def plot_pipeline_pcd(self):
         plot_wound(pcd=read_point_cloud_from_file(path="input_pcd_tmp.ply", plot=False))
+
+    def run_bpa(self):
+        try:
+            print("Create mesh using ball pivot algorithm")
+            pcd = read_point_cloud_from_file(path="input_pcd_tmp.ply", plot=False)
+            sqm = int(self.tE_sqm.toPlainText())
+            filename = self.tE_filename_bpa.toPlainText()
+            plot = self.rB_plotting_bpa.isChecked()
+
+            mesh = create_mesh_bpa_algo(pcd, sqm, filename, plot)
+        except:
+            print("Mesh creation failed")
+        o3d.io.write_triangle_mesh("bpa_mesh_tmp.obj", mesh)
+        print("Mesh created successfully")
+
+    def run_pois(self):
+        try:
+            print("Create mesh using poison algorithm")   
+            mesh = create_mesh_poisson_algo(pcd, self.rB_plotting_pois.isChecked())
+        except:
+            print("Mesh creation failed")
+        o3d.io.write_triangle_mesh("pois_mesh_tmp.obj", mesh)
+        print("Mesh created successfully")
+
+    def plot_selection(self):
+        pcd = read_point_cloud_from_file(path="input_pcd_tmp.ply", plot=False)
+        hull, return_list = pcd.compute_convex_hull()
+        hull_ls = o3d.geometry.LineSet.create_from_triangle_mesh(hull)
+        hull_ls.paint_uniform_color((1, 0, 0))
+        if self.cB_pcd_plot.isChecked():
+            pcd = pcd
+        else:
+            pcd = None
+        if self.cB_bpa_plot.isChecked():
+            mesh = o3d.io.read_triangle_mesh("bpa_mesh_tmp.obj")
+        elif self.cB_pois_plot.isChecked():
+            mesh = o3d.io.read_triangle_mesh("pois_mesh_tmp.obj")
+        else:mesh = None
+        if self.cB_hull_plot.isChecked():
+            hull = hull_ls
+        else:
+            hull = None
+        plot_wound(pcd=pcd,mesh=mesh,hull=hull)
+
+    def run_hull(self):
+        hull = compute_convex_hull(pcd = read_point_cloud_from_file(path="input_pcd_tmp.ply", plot=False), plot=self.rB_plotting_hull.isChecked())
+
 
 # Main routine for displaying the GUI
 def main():
