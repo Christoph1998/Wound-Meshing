@@ -105,7 +105,7 @@ class App(QMainWindow, Ui_MainWindow):
     def run_pois(self):
         try:
             print("Create mesh using poison algorithm")   
-            mesh = create_mesh_poisson_algo(pcd, self.rB_plotting_pois.isChecked())
+            mesh = create_mesh_poisson_algo(read_point_cloud_from_file(path="input_pcd_tmp.ply", plot=False), self.rB_plotting_pois.isChecked())
         except:
             print("Mesh creation failed")
         o3d.io.write_triangle_mesh("pois_mesh_tmp.obj", mesh)

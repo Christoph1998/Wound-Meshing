@@ -243,7 +243,7 @@ def create_mesh_poisson_algo(pcd, plot=False):
     mesh.paint_uniform_color([0.5, 0.5, 0.5])
     mesh.remove_degenerate_triangles()
     if plot:
-        o3d.visualization.draw_geometries([pcd, mesh], mesh_show_back_face=True)
+        o3d.visualization.draw_geometries([mesh], mesh_show_back_face=True)
 
     return mesh
 
