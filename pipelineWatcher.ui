@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1166</width>
+    <width>892</width>
     <height>939</height>
    </rect>
   </property>
@@ -17,10 +17,10 @@
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>0</y>
+      <x>10</x>
+      <y>10</y>
       <width>1191</width>
-      <height>851</height>
+      <height>871</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -30,82 +30,306 @@
      <attribute name="title">
       <string>Developer UI</string>
      </attribute>
-     <widget class="QLabel" name="l_ControlViewHeader">
+     <widget class="QLabel" name="label">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>111</width>
-        <height>17</height>
+        <x>100</x>
+        <y>430</y>
+        <width>55</width>
+        <height>21</height>
        </rect>
       </property>
       <property name="text">
-       <string>Control View</string>
+       <string>x_min</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pB_Plot">
+     <widget class="QLabel" name="label_2">
       <property name="geometry">
        <rect>
-        <x>30</x>
-        <y>160</y>
-        <width>171</width>
-        <height>71</height>
+        <x>100</x>
+        <y>460</y>
+        <width>55</width>
+        <height>21</height>
        </rect>
       </property>
       <property name="text">
-       <string>Test</string>
+       <string>x_max</string>
       </property>
      </widget>
-     <widget class="QLabel" name="l_Descr3">
+     <widget class="QLabel" name="label_4">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>50</y>
-        <width>67</width>
-        <height>17</height>
+        <x>100</x>
+        <y>490</y>
+        <width>55</width>
+        <height>21</height>
        </rect>
       </property>
       <property name="text">
-       <string>Left</string>
+       <string>y_min</string>
       </property>
      </widget>
-     <widget class="QRadioButton" name="rb_PrintX">
+     <widget class="QLabel" name="label_5">
       <property name="geometry">
        <rect>
-        <x>30</x>
-        <y>240</y>
-        <width>112</width>
-        <height>23</height>
+        <x>100</x>
+        <y>520</y>
+        <width>55</width>
+        <height>21</height>
        </rect>
       </property>
       <property name="text">
-       <string>Show x</string>
-      </property>
-      <property name="autoExclusive">
-       <bool>false</bool>
+       <string>y_max</string>
       </property>
      </widget>
-     <widget class="QTextEdit" name="tE_Number">
+     <widget class="QLabel" name="label_6">
       <property name="geometry">
        <rect>
-        <x>30</x>
-        <y>100</y>
+        <x>120</x>
+        <y>350</y>
+        <width>91</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>15</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Cropper</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_7">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>580</y>
+        <width>55</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>z_max</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_8">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>550</y>
+        <width>55</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>z_min</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="rB_plotting_cropping">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>610</y>
+        <width>91</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Plot</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_9">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>400</y>
+        <width>91</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Parameters</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="tE_filename_cropping">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>640</y>
+        <width>181</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="placeholderText">
+       <string>Enter filename to save</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pB_crop_pcd">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>730</y>
+        <width>191</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Crop Point Cloud</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_10">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>40</y>
+        <width>181</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>15</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Read Point Cloud</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="tE_filename_read_pcd">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>70</y>
+        <width>211</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="placeholderText">
+       <string>Enter filename of Point Cloud</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pB_read_pcd">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>130</y>
+        <width>191</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Test Point Cloud</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="rB_plotting_read_pcd">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>110</y>
+        <width>91</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Plot</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="tE_x_min">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>420</y>
         <width>61</width>
         <height>31</height>
        </rect>
       </property>
      </widget>
-     <widget class="QLabel" name="label_3">
+     <widget class="QTextEdit" name="tE_x_max">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>450</y>
+        <width>61</width>
+        <height>31</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="tE_y_min">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>480</y>
+        <width>61</width>
+        <height>31</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="tE_y_max">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>510</y>
+        <width>61</width>
+        <height>31</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="tE_z_min">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>540</y>
+        <width>61</width>
+        <height>31</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="tE_z_max">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>570</y>
+        <width>61</width>
+        <height>31</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pB_plot_measurement">
       <property name="geometry">
        <rect>
         <x>100</x>
-        <y>110</y>
-        <width>91</width>
-        <height>17</height>
+        <y>670</y>
+        <width>191</width>
+        <height>51</height>
        </rect>
       </property>
       <property name="text">
-       <string>x</string>
+       <string>Plot measurement</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pB_plot_pipeline_pcd">
+      <property name="geometry">
+       <rect>
+        <x>320</x>
+        <y>10</y>
+        <width>321</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Plot Point Cloud which is being used for operations</string>
       </property>
      </widget>
     </widget>
@@ -166,19 +390,6 @@
       </property>
      </widget>
     </widget>
-   </widget>
-   <widget class="QLabel" name="l_Time">
-    <property name="geometry">
-     <rect>
-      <x>330</x>
-      <y>860</y>
-      <width>181</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Time</string>
-    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

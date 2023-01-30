@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, uic
 print('[INFO] Successful import of uic') #often reinstallation of PyQt5 is required
 
-from PyQt5.QtCore import (QCoreApplication, QThread, QThreadPool, pyqtSignal, pyqtSlot, Qt, QTimer, QDateTime, QObject, QMutex)
+from PyQt5.QtCore import (QCoreApplication, QThread, QThreadPool, pyqtSignal, pyqtSlot, Qt, QTimer, QDateTime, QObject, QMutex, QTemporaryFile)
 from PyQt5.QtGui import (QImage, QPixmap, QTextCursor, QIntValidator)
 from PyQt5.QtWidgets import (QWidget, QMainWindow, QApplication, QLabel, QPushButton, QVBoxLayout, QGridLayout, QSizePolicy, QMessageBox, QFileDialog, QSlider, QComboBox, QProgressDialog)
 
@@ -30,7 +30,6 @@ qtCreatorFile = r"C:\Users\Christoph\Desktop\Wound-Meshing\pipelineWatcher.ui"
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
 
 
-
 #################################### APP ###################################################
 # Class for the central widget of the application defining the order/start-up/callbacks etc.; Opens the imported .ui GUI and inherits from it
 class App(QMainWindow, Ui_MainWindow):
@@ -42,20 +41,49 @@ class App(QMainWindow, Ui_MainWindow):
 
 
     def initUI(self):
-        self.tE_Number.setPlainText("Hallo")
-        self.rb_PrintX.toggled.connect(self.plotX)
-        self.pB_Plot.clicked.connect(self.plot_wound)
+        self.pB_read_pcd.clicked.connect(self.read_pcd)
+        self.pB_crop_pcd.clicked.connect(self.crop_pcd)
+        self.pB_plot_measurement.clicked.connect(self.plot_measurements)
+        self.pB_plot_pipeline_pcd.clicked.connect(self.plot_pipeline_pcd)
+        
 
-    def plotX(self):
-        print("was toggeled")
 
-    def plot_wound(self):
-        if self.rb_PrintX.isChecked():
-            textfield = int(self.tE_Number.toPlainText())
-            print(textfield)
-            print(textfield.type())
-        plot_wound(pcd)
+    def read_pcd(self):
+        print("Start reading Point Cloud")
+        try:
+            pcd = read_point_cloud_from_file(path=self.tE_filename_read_pcd.toPlainText(), plot=self.rB_plotting_read_pcd.isChecked())
+            print("Point Cloud reading successful.")
+        except:
+            print("Point Cloud read failed. Please check the file path.")
+        o3d.io.write_point_cloud("input_pcd_tmp.ply", pcd)
+        
+    def crop_pcd(self):
+        # read input data
+        pcd = read_point_cloud_from_file(path=self.tE_filename_read_pcd.toPlainText(), plot=False)           
 
+        try:
+            print("Start cropping")
+            x_min = float(self.tE_x_min.toPlainText())
+            x_max = float(self.tE_x_max.toPlainText())
+            y_min = float(self.tE_y_min.toPlainText())
+            y_max = float(self.tE_y_max.toPlainText())
+            z_min = float(self.tE_z_min.toPlainText())
+            z_max = float(self.tE_z_max.toPlainText())
+            coordinates = [x_min,x_max,y_min,y_max,z_min,z_max]
+            pcd = crop_point_cloud(pcd=pcd, coordinates=coordinates,plot=self.rB_plotting_cropping.isChecked(), 
+            filename=self.tE_filename_cropping.toPlainText())
+            print("Point Cloud cropped successfully")
+            
+        except:
+            print("Error while cropping Point Cloud. Please check data")
+        os.remove("input_pcd_tmp.ply")
+        o3d.io.write_point_cloud("input_pcd_tmp.ply", pcd)
+
+    def plot_measurements(self):
+        plot_measurements(read_point_cloud_from_file(path="input_pcd_tmp.ply", plot=False))
+
+    def plot_pipeline_pcd(self):
+        plot_wound(pcd=read_point_cloud_from_file(path="input_pcd_tmp.ply", plot=False))
 
 # Main routine for displaying the GUI
 def main():
