@@ -107,7 +107,7 @@ def testboard_v1_1200dots_35cm_flat_large2():
     # if filename != '' then pcd gets safed as file
     mesh = create_mesh_bpa_algo(pcd, 1000000, filename='test', plot=False)
 
-    volume_calculation(pcd)
+
 
     # compute convex hull and calculate object measurements
     hull = compute_convex_hull(pcd = pcd, plot=False)
@@ -156,6 +156,6 @@ def presentation_examples():
 if __name__ == "__main__":
 
     #testboard_v1_1200dots_35cm_flat_large()
-    #example_for_object_1()
-    presentation_examples()
+    example_for_object_1()
+    #presentation_examples()
 
